@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 const initalGameBoard = [
   [null, null, null],
@@ -6,19 +5,17 @@ const initalGameBoard = [
   [null, null, null],
 ];
 
-export default function GameBoard({ onSelectSquare, activePlayerSymbol }) {
-  const [gameBoard, setGameBoard] = useState(initalGameBoard);
+export default function GameBoard({ onSelectSquare, turns }) {
+  let gameBoard = initalGameBoard;
 
-  function handleSelectSquare(rowIndex, colIndex) {
-    setGameBoard((prevGameBoard) => {
-      const updatedBoard = structuredClone(prevGameBoard); // Deep copy to avoid mutating state
-      updatedBoard[rowIndex][colIndex] = activePlayerSymbol;
-      return updatedBoard;
-    });
+  for (const turn of turns) {
+    const { square, player } = turn;
+    const { row, col } = square;
+    
+    gameBoard[row][col] = player;
+  };
 
-    onSelectSquare();
-  }
-  
+
   return (
     <ol id="game-board">
       {gameBoard.map((row, rowIndex) => (
@@ -26,7 +23,7 @@ export default function GameBoard({ onSelectSquare, activePlayerSymbol }) {
           <ol>
             {row.map((playerSymbol, colIndex) => (
               <li key={colIndex}>
-                <button onClick={() => handleSelectSquare(rowIndex, colIndex)}>
+                <button onClick={() => onSelectSquare(rowIndex, colIndex)}>
                   {playerSymbol}
                 </button>
               </li>
